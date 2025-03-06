@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+  <title>Portal EduSearch</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+</head>
+<body>
+
+<div class="viewJournal1">
+  <!--SCHOLAR-->
+  <div th:if="${forScholarData != null}" class="container">
+    <p><strong>Portal  :</strong> <span th:text="${forScholar}"></span></p>
+    <table>
+      <tr align="center">
+        <th>No.</th>
+        <th>Judul</th>
+        <th>Tahun</th>
+        <th>Tautan</th>
+      </tr>
+
+      <tr th:each="entry, iterStat : ${forScholarData}">
+        <td align="center" th:text="${iterStat.count}">1</td>
+        <td th:text="${entry[0]}">judul</td>
+        <td th:text="${entry[1]}">Tahun</td>
+        <td>
+          <a th:href="${entry[2]}" target="_blank">View Article</a>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+  <br>
+
+  <!--    GARUDA-->
+  <div th:if="${forGarudaData != null}" class="container">
+    <p><strong>Portal  :</strong> <span th:text="${forGaruda}"></span></p>
+    <table>
+      <tr align="center">
+        <th>No.</th>
+        <th>Judul</th>
+        <th>Tahun</th>
+        <th>Tautan</th>
+      </tr>
+
+      <tr th:each="entry, iterStat : ${forGarudaData}">
+        <td align="center" th:text="${iterStat.count}">1</td>
+        <td th:text="${entry[0]}">judul</td>
+        <td th:text="${entry[1]}">Tahun</td>
+        <td>
+          <a th:href="${entry[2]}" target="_blank">View Article</a>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+</div>
+
+<script src="/js/script.js"></script>
+
+</body>
+
+</html>

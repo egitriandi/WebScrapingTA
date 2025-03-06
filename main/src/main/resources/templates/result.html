@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hasil Web Scraping</title>
+    <style>
+        /* Reset styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        th {
+            background-color: #0056b3;
+            color: #fff;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            max-width: 200px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Hover effects */
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Button style */
+        a.button {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #0056b3;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            display: block;
+            max-width: 200px;
+            margin: 20px auto;
+        }
+
+        a.button:hover {
+            background-color: #003d80;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Hasil Web Scraping</h1>
+
+    <div th:if="${portal != '2'}">
+        <table>
+            <tr align="center">
+                <th>No.</th>
+                <th>Judul</th>
+                <th>Link</th>
+            </tr>
+
+            <tr th:each="entry, iterStat : ${resultList}">
+                <td align="center" th:text="${iterStat.count}">1</td>
+                <td th:text="${entry[0]}">judul</td>
+                <td>
+                    <a th:href="${entry[1]}" th:text="${entry[1]}" target="_blank"></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div th:if="${portal == '2'}">
+        <table>
+            <tr align="center">
+                <th>No.</th>
+                <th>Judul</th>
+                <th>Nama Kampus</th>
+                <th>Akreditasi SINTA</th>
+                <th>Link</th>
+            </tr>
+
+            <tr th:each="entry, iterStat : ${resultList}">
+                <td align="center" th:text="${iterStat.count}">1</td>
+                <td th:text="${entry[0]}">judul</td>
+                <td th:text="${entry[1]}">Nama Kampus</td>
+                <td th:text="${entry[2]}">Akreditasi</td>
+                <td>
+                    <a th:href="${entry[3]}" th:text="${entry[3]}" target="_blank"></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <a href="/" class="button">Scrape lagi</a>
+</div>
+</body>
+</html>

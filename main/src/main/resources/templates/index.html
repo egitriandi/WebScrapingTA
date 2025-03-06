@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <title>Portal EduSearch</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+</head>
+<body>
+<div class="header">
+<!--    <img src="https://edunitas.id/assets/logo/ista.png" alt="Logo ISTA">-->
+    <img src="/img/selfLogo.jpeg" alt="Self Logo">
+<!--    <img th:src="@{/img/selfLogo.jpeg}" alt="Self Logo">-->
+    <div class="header-text">Portal EduSearch</div>
+</div>
+
+<div class="menubar">
+    <form action="/" method="post" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label>Pilih Portal :</label>
+            <div class="checkbox-group" onclick="toggleTextBox()">
+                <label>
+                    <input type="checkbox" id="googleScholar" name="portal" value="0">
+                    Google Scholar
+                </label>
+                <label>
+                    <input type="checkbox" id="garuda" name="portal" value="1">
+                    GARUDA
+                </label>
+                <label>
+                    <input type="checkbox" id="sinta" name="portal" value="2">
+                    SINTA
+                </label>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="form-group">
+            <label for="inputTitle">Masukkan Judul&nbsp;&nbsp;:</label>
+            <input type="text" id="inputTitle" name="inputTitle" required placeholder="Masukkan judul...">
+        </div>
+
+        <div class="form-group" id="labelTahun">
+            <br>
+            <label>Jarak Tahun</label>
+            <div class="select-container">
+                <div>
+                    <label for="fromDate">Dari :</label>
+                    <select id="fromDate" name="fromDate">
+                        <option value="">Pilih Tahun</option> <!-- Opsi kosong -->
+                    </select>
+                </div>
+                <div>
+                    <label for="toDate">Sampai :</label>
+                    <select id="toDate" name="toDate">
+                        <option value="">Pilih Tahun</option> <!-- Opsi kosong -->
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br>
+        <button type="submit" onclick="validateTitle()">Submit</button>
+        <p id="error-message" style="color: red;"></p>
+    </form>
+    <div class="watermark">
+        © 2025 Sistem Pencarian Artikel Ilmiah<br>
+        (Egie Triandi-202122042)
+    </div>
+</div>
+
+
+<div class="main-content">
+    <!--SCHOLAR-->
+    <div th:if="${resultListScholar != null}" class="container">
+        <p><strong>Portal  :</strong> <span th:text="${pickedPortalScholar}"></span></p>
+        <p><strong>Keyword :</strong> <span th:text="${keyword}"></span></p>
+        <table>
+            <tr align="center">
+                <th>No.</th>
+                <th>Judul</th>
+                <th>Tahun</th>
+                <th>Tautan</th>
+            </tr>
+
+            <tr th:each="entry, iterStat : ${resultListScholar}">
+                <td align="center" th:text="${iterStat.count}">1</td>
+                <td th:text="${entry[0]}">judul</td>
+                <td th:text="${entry[1]}">Tahun</td>
+                <td>
+                    <a th:href="${entry[2]}" target="_blank">View Article</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+
+<!--    GARUDA-->
+    <div th:if="${resultListGaruda != null}" class="container">
+        <p><strong>Portal  :</strong> <span th:text="${pickedPortalGaruda}"></span></p>
+        <p><strong>Keyword :</strong> <span th:text="${keyword}"></span></p>
+        <table>
+            <tr align="center">
+                <th>No.</th>
+                <th>Judul</th>
+                <th>Tahun</th>
+                <th>Tautan</th>
+            </tr>
+
+            <tr th:each="entry, iterStat : ${resultListGaruda}">
+                <td align="center" th:text="${iterStat.count}">1</td>
+                <td th:text="${entry[0]}">judul</td>
+                <td th:text="${entry[1]}">Tahun</td>
+                <td>
+                    <a th:href="${entry[2]}" target="_blank">View Article</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+
+<!--    SINTA-->
+    <div th:if="${resultListSinta != null}" class="container">
+        <p><strong>Portal  :</strong> <span th:text="${pickedPortalSinta}"></span></p>
+        <p><strong>Keyword :</strong> <span th:text="${keyword}"></span></p>
+        <table>
+            <tr align="center">
+                <th>No.</th>
+                <th>Jurnal</th>
+                <th>Institusi</th>
+                <th>Akreditasi</th>
+                <th>Tautan</th>
+            </tr>
+
+            <tr th:each="entry, iterStat : ${resultListSinta}">
+                <td align="center" th:text="${iterStat.count}">1</td>
+                <td th:text="${entry[0]}">judul</td>
+                <td th:text="${entry[1]}">Nama Kampus</td>
+                <td th:text="${entry[2]}">Akreditasi</td>
+                <td>
+                    <a href="javascript:void(0);" onclick="openJournalPopup(this.getAttribute('data-url'))"
+                       th:attr="data-url=${entry[3]}">View Journal</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+
+</div>
+
+    <div id="journalModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+<!--            <h2>Hasil Scraping</h2>-->
+            <div id="modal-body">
+                <p>Memuat...</p>
+                <div class="viewJournal1">
+                    <!--SCHOLAR-->
+                    <div th:if="${forScholarData != null}" class="container">
+                        <p><strong>Portal  :</strong> <span th:text="${forScholar}"></span></p>
+                        <table>
+                            <tr align="center">
+                                <th>No.</th>
+                                <th>Judul</th>
+                                <th>Tahun</th>
+                                <th>Tautan</th>
+                            </tr>
+
+                            <tr th:each="entry, iterStat : ${forScholarData}">
+                                <td align="center" th:text="${iterStat.count}">1</td>
+                                <td th:text="${entry[0]}">judul</td>
+                                <td th:text="${entry[1]}">Tahun</td>
+                                <td>
+                                    <a th:href="${entry[2]}" target="_blank">View Article</a>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <br>
+
+                    <!--    GARUDA-->
+                    <div th:if="${forGarudaData != null}" class="container">
+                        <p><strong>Portal  :</strong> <span th:text="${forGaruda}"></span></p>
+                        <table>
+                            <tr align="center">
+                                <th>No.</th>
+                                <th>Judul</th>
+                                <th>Tahun</th>
+                                <th>Tautan</th>
+                            </tr>
+
+                            <tr th:each="entry, iterStat : ${forGarudaData}">
+                                <td align="center" th:text="${iterStat.count}">1</td>
+                                <td th:text="${entry[0]}">judul</td>
+                                <td th:text="${entry[1]}">Tahun</td>
+                                <td>
+                                    <a th:href="${entry[2]}" target="_blank">View Article</a>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="/js/script.js"></script>
+
+</body>
+
+</html>

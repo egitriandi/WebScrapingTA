@@ -1,5 +1,6 @@
-package com.egieTA.main;
+package com.egieTA.main.services;
 
+import com.egieTA.main.constants.Constants;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,16 +24,11 @@ public class ScrapingService {
 
     public Map getScholarURL(String portal, String inputTitle, String fromDate, String toDate, boolean isSingleResult) throws  InterruptedException{
         Map resultMap = new HashMap();
-        inputTitle = inputTitle.replaceAll("\\s+", "+");
+        inputTitle = inputTitle.replaceAll(Constants.WHITE_SPACE_REGEX, Constants.PLUS_OPERATOR);
         ExecutorService executor = Executors.newFixedThreadPool(10); // Atur thread pool
         List<Future<Map<String, List<String>>>> futures = new ArrayList<>();
 
-        int attempt = 0;
-        if(isSingleResult){
-            attempt = 1;
-        }else{
-            attempt = Constants.ATTEMPT;
-        }
+        int attempt = isSingleResult ? 1 : Constants.ATTEMPT;
 
         for (int i = 1; i <= attempt; i++) {
             final int pageIndex = i;
@@ -47,9 +43,9 @@ public class ScrapingService {
         for (Future<Map<String, List<String>>> future : futures) {
             try {
                 Map<String, List<String>> pageData = future.get();
-                titleList.addAll(pageData.get("titles"));
-                yearList.addAll(pageData.get("years"));
-                linkList.addAll(pageData.get("links"));
+                titleList.addAll(pageData.get(Constants.TITLES));
+                yearList.addAll(pageData.get(Constants.YEARS));
+                linkList.addAll(pageData.get(Constants.LINKS));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -58,12 +54,11 @@ public class ScrapingService {
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.HOURS);
 
-        resultMap.put("titleList", titleList);
-        resultMap.put("yearList", yearList);
-        resultMap.put("linkList", linkList);
+        resultMap.put(Constants.TITLE_LIST, titleList);
+        resultMap.put(Constants.YEAR_LIST, yearList);
+        resultMap.put(Constants.LINK_LIST, linkList);
 
         return resultMap;
-
     }
 
     public Map getSintaURL(String inputTitle) throws InterruptedException {
@@ -80,18 +75,18 @@ public class ScrapingService {
                 List<String> akreditasis = new ArrayList<>();
                 List<String> links = new ArrayList<>();
 
-                String url = "https://sinta.kemdikbud.go.id/journals/index/?page=" + pageIndex + "&q=" + inputTitle;
+                String url = Constants.sintaURLBuilder[0] + pageIndex + Constants.sintaURLBuilder[1] + inputTitle;
                 Connection con = Jsoup.connect(url)
                         .userAgent(String.valueOf(userAgents[(int) (Math.random() * userAgents.length)])).timeout(5000);
                 Document doc = con.get();
                 Thread.sleep(3000);
 
-                Elements results = doc.select(".list-item");
+                Elements results = doc.select(Constants.SINTA_TAG);
                 for (Element result : results) {
-                    titles.add(result.select("div.affil-name.mb-3 a").text());
-                    colleges.add(result.select("div.affil-loc.mt-2 a").text());
+                    titles.add(result.select(Constants.SINTA_TITLE_TAG).text());
+                    colleges.add(result.select(Constants.SINTA_COLLEGE_TAG).text());
 
-                    String a = result.select("div.stat-prev.mt-2 a").text();
+                    String a = result.select(Constants.SINTA_AKREDITASI_TAG).text();
 
                     if(a.length() == 24){
                         String b = a.substring(0, 11);
@@ -101,13 +96,13 @@ public class ScrapingService {
                         akreditasis.add(a);
                     }
 
-                    links.add(result.select("a").attr("href"));
+                    links.add(result.select(Constants.LITTLE_A).attr(Constants.HREF));
                 }
 
-                pageData.put("titles", titles);
-                pageData.put("colleges", colleges);
-                pageData.put("akreditasis", akreditasis);
-                pageData.put("links", links);
+                pageData.put(Constants.TITLES, titles);
+                pageData.put(Constants.COLLEGES, colleges);
+                pageData.put(Constants.AKREDITASI, akreditasis);
+                pageData.put(Constants.LINKS, links);
                 return pageData;
             }));
         }
@@ -121,10 +116,10 @@ public class ScrapingService {
         for (Future<Map<String, List<String>>> future : futures) {
             try {
                 Map<String, List<String>> pageData = future.get();
-                titleList.addAll(pageData.get("titles"));
-                collegeList.addAll(pageData.get("colleges"));
-                akreditasiList.addAll(pageData.get("akreditasis"));
-                linkList.addAll(pageData.get("links"));
+                titleList.addAll(pageData.get(Constants.TITLES));
+                collegeList.addAll(pageData.get(Constants.COLLEGES));
+                akreditasiList.addAll(pageData.get(Constants.AKREDITASI));
+                linkList.addAll(pageData.get(Constants.LINKS));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -133,10 +128,10 @@ public class ScrapingService {
         executor.shutdown();
         executor.awaitTermination(1, TimeUnit.HOURS);
 
-        resultMap.put("titleList", titleList);
-        resultMap.put("collegeList", collegeList);
-        resultMap.put("akreditasiList", akreditasiList);
-        resultMap.put("linkList", linkList);
+        resultMap.put(Constants.TITLE_LIST, titleList);
+        resultMap.put(Constants.COLLEGE_LIST, collegeList);
+        resultMap.put(Constants.AKREDITASI_LIST, akreditasiList);
+        resultMap.put(Constants.LINK_LIST, linkList);
 
         return resultMap;
     }
@@ -151,54 +146,60 @@ public class ScrapingService {
             String url = Constants.EMPTY_STRING;
 
             if(isSingleResult){
-                url = portal.equals("0")
-                        ? "https://scholar.google.com/scholar?hl=id&as_sdt=0%2C5&q=" + finalInputTitle
-                        : "https://garuda.kemdikbud.go.id/documents?select=title&q=" + finalInputTitle;
+                url = portal.equals(Constants.STRING_ZERO)
+                        ? Constants.scholarSingleURLBuilder[0] + finalInputTitle
+                        : Constants.garudaMultiURLBuilder[0] + finalInputTitle;
             }else{
-                url = portal.equals("0")
-                        ? "https://scholar.google.com/scholar?start=" + (pageIndex * 10) + "&q=" + finalInputTitle + "&as_ylo=" + fromDate + "&as_yhi=" + toDate
-                        : "https://garuda.kemdikbud.go.id/documents?page=" + pageIndex + "&q=" + finalInputTitle + "&from=" + fromDate + "&to=" + toDate;
+                url = portal.equals(Constants.STRING_ZERO)
+                        ? Constants.scholarMultiURLBuilder[0] + (pageIndex * 10)
+                        + Constants.scholarMultiURLBuilder[1] + finalInputTitle
+                        + Constants.scholarMultiURLBuilder[2] + fromDate
+                        + Constants.scholarMultiURLBuilder[3] + toDate
+                        : Constants.garudaMultiURLBuilder[0] + pageIndex
+                        + Constants.garudaMultiURLBuilder[1] + finalInputTitle
+                        + Constants.garudaMultiURLBuilder[2] + fromDate
+                        + Constants.garudaMultiURLBuilder[3] + toDate;
             }
 
             Connection con = Jsoup.connect(url)
                     .userAgent(String.valueOf(userAgents[(int) (Math.random() * userAgents.length)]))
-                    .timeout(5000);
+                    /*.timeout(5000)*/;
             Document doc = con.get();
             Thread.sleep(3000);
 
-            Elements results = portal.equals("0") ? doc.select(".gs_ri") : doc.select(".article-item");
+            Elements results = portal.equals(Constants.STRING_ZERO) ? doc.select(Constants.SCHOLAR_TAG) : doc.select(Constants.GARUDA_TAG);
             for (Element result : results) {
                 String title = Constants.EMPTY_STRING;
                 String tahun = Constants.EMPTY_STRING;
-                if (portal.equals("0")) {
-                    title = result.select(".gs_rt").text();
+                if (portal.equals(Constants.STRING_ZERO)) {
+                    title = result.select(Constants.SCHOLAR_TITLE_TAG).text();
                 } else {
-                    Elements e = result.select("a");
+                    Elements e = result.select(Constants.LITTLE_A);
                     for (Element tempE : e) {
                         title = tempE.text();
                         break;
                     }
                 }
 
-                tahun = portal.equals("0")
-                        ? result.select(".gs_a").text()
-                        : result.select(".subtitle-article").text();
+                tahun = portal.equals(Constants.STRING_ZERO)
+                        ? result.select(Constants.SCHOLAR_YEAR_TAG).text()
+                        : result.select(Constants.GARUDA_YEAR_TAG).text();
 
-                String link = portal.equals("0")
-                            ? result.select(".gs_rt").select("a").attr("href")
-                            : result.select("a").attr("href");
+                String link = portal.equals(Constants.STRING_ZERO)
+                            ? result.select(Constants.SCHOLAR_TITLE_TAG).select(Constants.LITTLE_A).attr(Constants.HREF)
+                            : result.select(Constants.LITTLE_A).attr(Constants.HREF);
 
                 pageTitleList.add(title);
                 Matcher matcher = yearPattern.matcher(tahun);
                 if (matcher.find()) {
                     pageYearList.add(matcher.group());  // Ambil tahun yang ditemukan
                 }
-                pageLinkList.add(portal.equals("0") ? link : "https://garuda.kemdikbud.go.id" + link);
+                pageLinkList.add(portal.equals(Constants.STRING_ZERO) ? link : "https://garuda.kemdikbud.go.id" + link);
             }
 
-            pageData.put("titles", pageTitleList);
-            pageData.put("years", pageYearList);
-            pageData.put("links", pageLinkList);
+            pageData.put(Constants.TITLES, pageTitleList);
+            pageData.put(Constants.YEARS, pageYearList);
+            pageData.put(Constants.LINKS, pageLinkList);
 
         } catch (Exception e) {
             e.printStackTrace(); // Cetak error jika terjadi masalah
@@ -215,7 +216,7 @@ public class ScrapingService {
         return String.join("/", parts);
     }
 
-    protected Map<String, Map> scrapeJournal(String url) {
+    public Map<String, Map> scrapeJournal(String url) {
         Map<String, Map> pageData = new HashMap<>();
 
         try {
@@ -249,20 +250,20 @@ public class ScrapingService {
         Document doc = con.get();
         Thread.sleep(3000);
 
-        Elements results = doc.select(".ar-list-item.mb-5");
+        Elements results = doc.select(Constants.VIEW_JOURNAL_TAG);
         for (Element result : results) {
-            String title = result.select(".ar-title a").text();
-            String tahun = result.select(".ar-year").text().replaceAll("[^0-9]", "").trim();
-            String link = result.select(".ar-title a").attr("href");
+            String title = result.select(Constants.VIEW_JOURNAL_TITLE_TAG).text();
+            String tahun = result.select(Constants.VIEW_JOURNAL_YEAR_TAG).text().replaceAll("[^0-9]", Constants.EMPTY_STRING).trim();
+            String link = result.select(Constants.VIEW_JOURNAL_LINK_TAG).attr(Constants.HREF);
 
             pageTitleList.add(title);
             pageYearList.add(tahun);
             pageLinkList.add(link);
         }
 
-        returnMap.put("titles", pageTitleList);
-        returnMap.put("years", pageYearList);
-        returnMap.put("links", pageLinkList);
+        returnMap.put(Constants.TITLES, pageTitleList);
+        returnMap.put(Constants.YEARS, pageYearList);
+        returnMap.put(Constants.LINKS, pageLinkList);
 
         return returnMap;
     }

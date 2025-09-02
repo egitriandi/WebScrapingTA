@@ -215,5 +215,5 @@ function closeModal() {
 }
 
 // Mengisi dropdown dari tahun 1990 hingga tahun sekarang
-populateYearOptions("fromDate", 2000);
-populateYearOptions("toDate", 2000);
+populateYearOptions("fromDate", 2021);
+populateYearOptions("toDate", 2021);

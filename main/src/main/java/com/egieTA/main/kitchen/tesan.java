@@ -1,5 +1,6 @@
-package com.egieTA.main;
+package com.egieTA.main.kitchen;
 
+import com.egieTA.main.constants.Constants;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,7 +22,7 @@ public class tesan {
     public static void main(String [] args){
         Map tempMap = new HashMap();
 
-        tempMap = scrapeDataSingleTerm("1", 10, "Aplikasi Pengenalan Perangkat Keras Komputer Berbasis Android Menggunakan Augmented Reality", "2021", "2024");
+        tempMap = scrapeDataSingleTerm("1", 10, "PEMBELAJARAN ILMU KOMPUTER TANPA KOMPUTER UNPLUGGED ACTIVITIES UNTUK MELATIH KETERAMPILAN LOGIKA ANAK", "2021", "2024");
         System.out.println("a");
     }
 
@@ -38,7 +39,7 @@ public class tesan {
 
             Connection con = Jsoup.connect(url)
                     .userAgent(String.valueOf(userAgents[(int) (Math.random() * userAgents.length)]))
-                    .timeout(5000);
+                    /*.timeout(5000)*/;
             Document doc = con.get();
             Thread.sleep(3000);
 

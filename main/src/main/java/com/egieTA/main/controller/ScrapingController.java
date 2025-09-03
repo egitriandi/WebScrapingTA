@@ -155,6 +155,7 @@ public class ScrapingController {
                 }
                 if(Arrays.asList(tempPortal).contains(Constants.STRING_TWO)){
                     List tempList = new ArrayList();
+                    setPortal = Constants.STRING_TWO;
                     result = scrapingService.getSintaURL(inputTitle);
 
                     List titleList = new ArrayList();
@@ -202,6 +203,12 @@ public class ScrapingController {
                             tempList.add(parts);
                         }
                     }
+
+                    if(tempList.size() > 0){
+                        journalService.saveJournals(tempList, setPortal, inputTitle);
+                    }
+
+
                     model.addAttribute("pickedPortalSinta", "SINTA");
                     model.addAttribute("resultListSinta", tempList);
                 }
@@ -211,7 +218,6 @@ public class ScrapingController {
             }
         }else{
             List tempList = (List) sourceMap.get("dataList");
-
 
             if(Arrays.asList(tempPortal).contains(Constants.STRING_ZERO)){
                 List dataList = new ArrayList();
@@ -245,6 +251,23 @@ public class ScrapingController {
                 }
                 model.addAttribute("pickedPortalGaruda", "GARUDA");
                 model.addAttribute("resultListGaruda", dataList);
+            }
+
+            if(Arrays.asList(tempPortal).contains(Constants.STRING_TWO)){
+                List dataList = new ArrayList();
+                for(int i = 0; i < tempList.size(); i++){
+                    Journal j = (Journal) tempList.get(i);
+                    if(j.getSource().equals("Sinta")){
+                        String[] parts = {j.getTitle(), j.getInstansi(), j.getAkreditasi(), j.getUrl()};
+                        if(dataList.size() == Constants.MAX_RECORD_SIZE){
+                            break;
+                        }else{
+                            dataList.add(parts);
+                        }
+                    }
+                }
+                model.addAttribute("pickedPortalSinta", "SINTA");
+                model.addAttribute("resultListSinta", dataList);
             }
         }
         model.addAttribute("keyword", inputTitle);

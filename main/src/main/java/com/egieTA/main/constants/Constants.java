@@ -71,7 +71,7 @@ public class Constants {
 
 
     public static int ATTEMPT = 10;
-    public static int MAX_RECORD_SIZE = 20;
+    public static int MAX_RECORD_SIZE = 50;
 
 
 

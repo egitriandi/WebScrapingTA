@@ -50,7 +50,7 @@ public class JournalService {
 
         for(int i = 0; i < returnList.size(); i++){
             Journal j = (Journal) returnList.get(i);
-            journalRepository.save(j);
+            journalRepository.insertIgnoreDuplicate(j.getTitle(), j.getUrl(), j.getSource(), j.getKeyword(), j.getYear(), j.getInstansi(), j.getAkreditasi());
         }
     }
 

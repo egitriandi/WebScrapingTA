@@ -15,25 +15,25 @@ public class Journal {
     @Column(columnDefinition = "TEXT", nullable = false, unique = true)
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String url;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String source;
 
     @Column(name = "scraped_at", insertable = false, updatable = false)
     private LocalDateTime scrapedAt;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String keyword;
 
     @Column(nullable = false)
     private short year;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String instansi;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String akreditasi;
 
     public Integer getId() {

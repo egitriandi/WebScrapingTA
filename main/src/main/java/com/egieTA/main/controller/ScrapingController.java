@@ -208,7 +208,6 @@ public class ScrapingController {
                         journalService.saveJournals(tempList, setPortal, inputTitle);
                     }
 
-
                     model.addAttribute("pickedPortalSinta", "SINTA");
                     model.addAttribute("resultListSinta", tempList);
                 }

@@ -57,23 +57,25 @@ public class Constants {
             2, "Sinta"
     );
 
-
-
     public static String[] USER_AGENT = {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36",
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
                     "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0"};
 
-    public static String[] garudaSingleURLBuilder = {"https://garuda.kemdikbud.go.id/documents?select=title&&pdf=1&q="};
-    public static String[] garudaMultiURLBuilder = {"https://garuda.kemdikbud.go.id/documents?page=", "&select=title&&pdf=1&q=", "&from=", "&to="};
+    public static String garudaURL = "https://garuda.kemdiktisaintek.go.id";
+    public static String[] garudaSingleURLBuilder = {"https://garuda.kemdiktisaintek.go.id/documents?select=title&pub=&q="};
+    public static String[] garudaMultiURLBuilderLast = {"https://garuda.kemdiktisaintek.go.id/documents?page=", "&select=title&pub=&q=", "&from=", "&to="};
+    public static String[] garudaMultiURLBuilder = {"https://garuda.kemdiktisaintek.go.id/documents?page=", "&q=", "&from=", "&to="};
+
     public static String[] scholarSingleURLBuilder = {"https://scholar.google.com/scholar?hl=id&as_sdt=0%2C5&q="};
-    public static String[] scholarMultiURLBuilder = {"https://scholar.google.com/scholar?start=", "&q=", "&as_ylo=", "&as_yhi"};
-    public static String[] sintaURLBuilder = {"https://sinta.kemdikbud.go.id/journals/index/?page=", "&q="};
+    public static String[] scholarMultiURLBuilder = {"https://scholar.google.com/scholar?start=", "&q=", "&hl=id&as_sdt=2007&as_ylo=", "&as_yhi"};
+
+    public static String[] sintaURLBuilder = {"https://sinta.kemdiktisaintek.go.id/journals/index/?page=", "&q="};
 
 
-    public static int ATTEMPT = 10;
+    public static final int ATTEMPT = 7;
     public static int MAX_RECORD_SIZE = 50;
 
-
-
+    public static final String STRING_YES = "y";
+    public static final String STRING_NO = "n";
 
 }

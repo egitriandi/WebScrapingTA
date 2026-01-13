@@ -22,8 +22,33 @@ public class tesan {
     public static void main(String [] args){
         Map tempMap = new HashMap();
 
-        tempMap = scrapeDataSingleTerm("1", 10, "PEMBELAJARAN ILMU KOMPUTER TANPA KOMPUTER UNPLUGGED ACTIVITIES UNTUK MELATIH KETERAMPILAN LOGIKA ANAK", "2021", "2024");
-        System.out.println("a");
+        tempMap = scrapeData("0", 10, "KOMPUTER", "2021", "2025");
+
+//        int countFizzBuzz = 0;
+//        int countFizz = 0;
+//        int countBuzz = 0;
+//        int count = 0;
+//
+//        for(int i = 1; i <= 100; i++){
+//            if(i % 10 == 0){
+//                System.out.println("Fizz-Buzz");
+//                countFizzBuzz++;
+//            }else if(i % 2 == 0){
+//                System.out.println("Fizz");
+//                countFizz++;
+//            }else if(i % 5 == 0){
+//                System.out.println("Buzz");
+//                countBuzz++;
+//            }else{
+//                System.out.println(i);
+//                count++;
+//            }
+//        }
+//        System.out.println("");
+//        System.out.println("Jumlah Fizz = "+countFizz);
+//        System.out.println("Jumlah Buzz = "+countBuzz);
+//        System.out.println("Jumlah Fizz-Buzz = "+countFizzBuzz);
+//        System.out.println("Other = "+count);
     }
 
     private static Map<String, List<String>> scrapeDataSingleTerm(String portal, int pageIndex, String finalInputTitle, String fromDate, String toDate) {
@@ -39,7 +64,7 @@ public class tesan {
 
             Connection con = Jsoup.connect(url)
                     .userAgent(String.valueOf(userAgents[(int) (Math.random() * userAgents.length)]))
-                    /*.timeout(5000)*/;
+                    .timeout(5000);
             Document doc = con.get();
             Thread.sleep(3000);
 
@@ -94,7 +119,7 @@ public class tesan {
 
         try {
             String url = portal.equals("0")
-                    ? "https://scholar.google.com/scholar?start=" + (pageIndex * 10) + "&q=" + finalInputTitle + "&as_ylo=" + fromDate + "&as_yhi=" + toDate
+                    ? "https://scholar.google.com/scholar?start=" + (pageIndex * 10) + "&q=" + finalInputTitle + "&hl=id&as_sdt=2007&as_ylo=" + fromDate + "&as_yhi=" + toDate
                     : "https://garuda.kemdikbud.go.id/documents?page=" + pageIndex + "&q=" + finalInputTitle + "&from=" + fromDate + "&to=" + toDate;
 
             Connection con = Jsoup.connect(url)

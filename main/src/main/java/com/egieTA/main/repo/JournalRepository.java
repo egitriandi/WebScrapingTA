@@ -10,11 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface JournalRepository extends JpaRepository<Journal, Integer> {
-    // Bisa tambahkan custom method jika butuh
+
     Journal findByTitle(String title);
 
     @Query(
-            value = "SELECT * FROM journals WHERE keyword = :keyword AND source IN (:source) ORDER BY scraped_at DESC",
+            value = "SELECT * FROM journals " +
+                    "WHERE keyword = :keyword " +
+                    "AND source IN (:source) " +
+                    "ORDER BY scraped_at DESC",
             nativeQuery = true
     )
     List<Journal> findByKeywordAndSourceNative(
@@ -25,8 +28,8 @@ public interface JournalRepository extends JpaRepository<Journal, Integer> {
     @Transactional
     @Query(value = """
         INSERT INTO journals 
-        (title, url, source, keyword, year, instansi, akreditasi) 
-        VALUES (:title, :url, :source, :keyword, :year, :instansi, :akreditasi)
+        (title, url, source, keyword, year, instansi, akreditasi, iserror, detailserror) 
+        VALUES (:title, :url, :source, :keyword, :year, :instansi, :akreditasi, :iserror, :detailserror)
         ON CONFLICT (title) DO NOTHING
     """, nativeQuery = true)
     void insertIgnoreDuplicate(@Param("title") String title,
@@ -36,7 +39,9 @@ public interface JournalRepository extends JpaRepository<Journal, Integer> {
                                @Param("keyword") String keyword,
                                @Param("year") int year,
                                @Param("instansi") String instansi,
-                               @Param("akreditasi") String akreditasi);
+                               @Param("akreditasi") String akreditasi,
+                               @Param("iserror") String isError,
+                               @Param("detailserror") String detailError);
 }
 
 

@@ -53,7 +53,7 @@ function validateForm() {
             alert("Silakan isi jarak tahun untuk Google Scholar dan GARUDA.");
                     return false;
         }
-        if(fromDate >= toDate){
+        if(fromDate > toDate){
                 alert("Jarak tahun tidak valid. Periksa kembali.");
                 return false;
             }
@@ -66,6 +66,8 @@ function validateTitle() {
     let inputField = document.getElementById("inputTitle");
     let errorMessage = document.getElementById("error-message");
     let title = inputField.value.trim(); // Hilangkan spasi di awal & akhir
+    const resultAsk = document.getElementById("resultAsk").value;
+    const number = Number(resultAsk);
 
     console.log("Input Judul:", title); // Debugging, cek input sebelum validasi
 
@@ -82,6 +84,11 @@ function validateTitle() {
     if (title.length < 5) {
         errorMessage.textContent = "Judul harus minimal 5 karakter!";
         return;
+    }
+
+    if(number === 0 || number > 50){
+       alert("Jumlah Result yang dibutuhkan harus > 0 atau <= 50");
+       return;
     }
 }
 
@@ -100,6 +107,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const yearRegex = /^\d{4}$/; // Format tahun: 4 digit angka
         const currentYear = new Date().getFullYear();
 
+        const resultAsk = document.getElementById("resultAsk").value;
+        const number = Number(resultAsk);
+
         // Cek apakah portal adalah Google Scholar atau GARUDA
         if (portalSelect === "0" || portalSelect === "1") {
             if (fromDate === "" || toDate === "") {
@@ -108,6 +118,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 if(portalSelect === "1"){
                     alert("Input tahun wajib diisi untuk GARUDA.");
+                }
+
+                if(number === 0 || number > 50){
+                   alert("Jumlah Result yang dibutuhkan harus > 0 atau <= 50");
+                   return;
                 }
                 event.preventDefault(); // Mencegah form terkirim
             }
@@ -133,11 +148,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            if (fromDate == toDate) {
-                alert("Tahun 'Dari' tidak boleh sama dengan dari tahun 'Sampai'.");
-                event.preventDefault();
-                return;
-            }
+//            if (fromDate == toDate) {
+//                alert("Tahun 'Dari' tidak boleh sama dengan dari tahun 'Sampai'.");
+//                event.preventDefault();
+//                return;
+//            }
         }
     });
 });
@@ -215,5 +230,5 @@ function closeModal() {
 }
 
 // Mengisi dropdown dari tahun 1990 hingga tahun sekarang
-populateYearOptions("fromDate", 2021);
-populateYearOptions("toDate", 2021);
+populateYearOptions("fromDate", 2022);
+populateYearOptions("toDate", 2022);

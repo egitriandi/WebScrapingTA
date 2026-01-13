@@ -36,6 +36,12 @@ public class Journal {
     @Column(columnDefinition = "TEXT")
     private String akreditasi;
 
+    @Column(name = "iserror", columnDefinition = "TEXT")
+    private String isError;
+
+    @Column(name = "detailserror", columnDefinition = "TEXT")
+    private String detailsError;
+
     public Integer getId() {
         return id;
     }
@@ -106,5 +112,21 @@ public class Journal {
 
     public void setAkreditasi(String akreditasi) {
         this.akreditasi = akreditasi;
+    }
+
+    public String getIsError() {
+        return isError;
+    }
+
+    public void setIsError(String isError) {
+        this.isError = isError;
+    }
+
+    public String getDetailsError() {
+        return detailsError;
+    }
+
+    public void setDetailsError(String detailsError) {
+        this.detailsError = detailsError;
     }
 }
